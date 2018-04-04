@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libOSAL.a  CMakeFiles/OSAL.dir/os/hal/osal/rt/osal.c.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libOSAL.a
