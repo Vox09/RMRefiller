@@ -1,5 +1,9 @@
-# RMdevBoard_ChibiOS  
-  
+# RoboMaster Refiller 2018
+
+The flow diagram for the refiller has been implemented in the `main.c` function to improve redability. Most of the supporting hardware libraries can be found in the `rangefinder.h` header files
+
+# Toolchain usage instructions
+
 ## Get Chibi up and running in Windows
 (Written by Alex Wong, tell me if I got sth wrong)  
   
