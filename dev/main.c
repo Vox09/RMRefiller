@@ -133,8 +133,8 @@ int main(void) {
 		// ====================================================================================================
 
 		// Calculate the distance from rangefinder sensors on both sides of the Refiller
-		distance [0] = rangeFinder_getDistance(1)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
-		distance [1] = rangeFinder_getDistance(0)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
+		distance [TANK_SX] = rangeFinder_getDistance(1)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
+		distance [TANK_DX] = rangeFinder_getDistance(0)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
 		// The chVTGetSystemTimeX() workaround is needed since on startup the position is 1000 times the
 		// correct one (WARMUP is empirical) TODO: solve the rangefinder bug
 
