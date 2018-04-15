@@ -78,7 +78,7 @@ This installation makes use of terminal, if you are not familiar with the use of
 
 3. Clone this repository:
 
-		git clone https://github.com/robomasterhkust/RMdevBoard_ChibiOS
+		git clone https://github.com/robomasterhkust/RMRefiller
 
 4. Import the project in CLion:
 	- Open CLion (if you do not have CLion installed [follow these steps](#install-clion-with-a-free-student-license) to obtain a free student license) and import `RMdevBoard_ChibiOS` as a project.
