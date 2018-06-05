@@ -56,8 +56,6 @@ static THD_FUNCTION(matlab_thread, p)
   float txbuf_f[16];
   BaseSequentialStream* chp = (BaseSequentialStream*)SERIAL_DATA;
 
-  PIMUStruct PIMU = imu_get();
-  chassisStruct* chassis = chassis_get();
 //  GimbalStruct* gimbal = gimbal_get();
 
   uint32_t tick = chVTGetSystemTimeX();
@@ -72,7 +70,7 @@ static THD_FUNCTION(matlab_thread, p)
       tick = chVTGetSystemTimeX();
     }
 
-    txbuf_f[0] = PIMU->euler_angle[Roll];
+    //txbuf_f[0] = PIMU->euler_angle[Roll];
 
     transmit_matlab(chp, NULL, txbuf_f, 0, 1);
   }
@@ -86,24 +84,11 @@ void cmd_test(BaseSequentialStream * chp, int argc, char *argv[])
 {
   (void) argc,argv;
 
-	for (int i = 0; i < 200; i++) {
-		chThdSleepMilliseconds(100);
-		chprintf(chp,"R%d: %.3f\r\n", 1,  rangeFinder_getDistance(1));
-	}
-
 }
 
 void cmd_error(BaseSequentialStream * chp, int argc, char *argv[])
 {
-  uint32_t error = chassis_getError();
-  if(error)
-    chprintf(chp,"CHASSIS ERROR: %X\r\n", error);
 
-  error = lift_getError();
-  if(error)
-    chprintf(chp,"LIFT ERROR:    %X\r\n", error);
-
-  LEDY_OFF();
 }
 
 /**
@@ -140,78 +125,12 @@ void cmd_data(BaseSequentialStream * chp, int argc, char *argv[])
   }
 }
 
-void cmd_calibrate(BaseSequentialStream * chp, int argc, char *argv[])
-{
-  PIMUStruct pIMU = imu_get();
-  PGyroStruct pGyro = gyro_get();
-  if(argc)
-  {
-    if(!strcmp(argv[0], "accl"))
-    {
-      pIMU->accelerometer_not_calibrated = true;
-      chThdSleepMilliseconds(10);
-      calibrate_accelerometer(pIMU);
-      chThdResume(&(pIMU->imu_Thd), MSG_OK);
-    }
-    else if(!strcmp(argv[0], "gyro"))
-    {
-      pIMU->gyroscope_not_calibrated = true;
-      chThdSleepMilliseconds(10);
-      calibrate_gyroscope(pIMU);
-      chThdResume(&(pIMU->imu_Thd), MSG_OK);
-    }
-    else if(!strcmp(argv[0], "adi"))
-    {
-      pGyro->adis_gyroscope_not_calibrated = true;
-      chThdSleepMilliseconds(10);
-      if(argc && !strcmp(argv[1],"fast"))
-        gyro_cal(pGyro,false); //fast calibration ~30s
-      else if(argc && strcmp(argv[1],"full"))
-        chprintf(chp,"Invalid parameter!\r\n");
-      else
-        gyro_cal(pGyro,true); //full calibration ~5min
-      chThdResume(&(pGyro->adis_Thd), MSG_OK);
-    }
-    param_save_flash();
-  }
-  else
-    chprintf(chp,"Calibration: gyro, accl, adi fast, adi full\r\n");
-}
-
-void cmd_temp(BaseSequentialStream * chp, int argc, char *argv[])
-{
-  (void) argc,argv;
-//  uint32_t tick = chVTGetSystemTimeX();
-//  tick += US2ST(5U);
-
-//  while(1){ // you can uncomment this so that it continuously send the data out.
-              // this is useful in tuning the Temperature PID
-      PIMUStruct _pimu = imu_get();
-//      pTPIDStruct _tempPID = TPID_get();
-      chprintf(chp,"%f\n", _pimu->temperature);
-//      chprintf(chp,"Temperature: %f\f\n", _pimu->temperature);
-//      chprintf(chp,"PID_value: %i\i\n", _tempPID->PID_Value);
-//      chThdSleep(MS2ST(500));
-//  }
-}
-
-void cmd_gyro(BaseSequentialStream * chp, int argc, char *argv[])
-{
-      (void) argc,argv;
-
-      PGyroStruct _pGyro = gyro_get();
-      chprintf(chp,"Offset: %f\n", _pGyro->offset);
-      chprintf(chp,"Angle_vel: %f\n", _pGyro->angle_vel);
-      chprintf(chp,"Angle: %f\n", _pGyro->angle);
-}
-
 /*extern volatile int16_t measured_speed_fuck;
 void cmd_measure(BaseSequentialStream * chp, int argc, char *argv[])
 {
 	(void) argc,argv;
 	chprintf(chp,"speed: %d\n", measured_speed_fuck);
 }*/
-
 
 
 /**
@@ -221,9 +140,6 @@ void cmd_measure(BaseSequentialStream * chp, int argc, char *argv[])
 static const ShellCommand commands[] =
 {
   {"test", cmd_test},
-  {"cal", cmd_calibrate},
-  {"temp", cmd_temp},
-  {"gyro", cmd_gyro},
   {"WTF", cmd_error},
 	//{"m", cmd_measure},
 	{"\xEE", cmd_data},

@@ -1,16 +1,14 @@
 build/obj/math_misc.o: math_misc.c inc/math_misc.h \
  ../os/hal/include/hal.h ../os/hal/osal/rt/osal.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h \
- ../os/rt/include/ch.h ../os/rt/ports/ARMCMx/compilers/GCC/chtypes.h \
- chconf.h ../os/rt/include/chlicense.h ../os/rt/include/chsystypes.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
+ /usr/include/newlib/stdint.h \
+ /usr/include/newlib/machine/_default_types.h \
+ /usr/include/newlib/sys/features.h /usr/include/newlib/sys/_intsup.h \
+ /usr/include/newlib/sys/_stdint.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h ../os/rt/include/ch.h \
+ ../os/rt/ports/ARMCMx/compilers/GCC/chtypes.h chconf.h \
+ ../os/rt/include/chlicense.h ../os/rt/include/chsystypes.h \
  ../os/rt/ports/ARMCMx/chcore.h \
  ../os/common/ports/ARMCMx/devices/STM32F4xx/cmparams.h ../hw/board.h \
  ../os/ext/CMSIS/ST/STM32F4xx/stm32f4xx.h \
@@ -61,17 +59,11 @@ build/obj/math_misc.o: math_misc.c inc/math_misc.h \
  ../os/hal/ports/STM32/LLD/OTGv1/stm32_otg.h ../os/hal/include/wdg.h \
  ../os/hal/include/st.h ../os/hal/include/mmc_spi.h \
  ../os/hal/include/serial_usb.h ../os/hal/include/usb_cdc.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/math.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/newlib.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/config.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/ieeefp.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/cdefs.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h
+ /usr/include/newlib/math.h /usr/include/newlib/sys/reent.h \
+ /usr/include/newlib/_ansi.h /usr/include/newlib/newlib.h \
+ /usr/include/newlib/sys/config.h /usr/include/newlib/machine/ieeefp.h \
+ /usr/include/newlib/sys/_types.h /usr/include/newlib/machine/_types.h \
+ /usr/include/newlib/sys/lock.h /usr/include/newlib/_ansi.h
 
 inc/math_misc.h:
 
@@ -79,23 +71,21 @@ inc/math_misc.h:
 
 ../os/hal/osal/rt/osal.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h:
+/usr/include/newlib/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h:
+/usr/include/newlib/machine/_default_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h:
+/usr/include/newlib/sys/features.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h:
+/usr/include/newlib/sys/_intsup.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h:
+/usr/include/newlib/sys/_stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
 
 ../os/rt/include/ch.h:
 
@@ -281,24 +271,22 @@ mcuconf.h:
 
 ../os/hal/include/usb_cdc.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/math.h:
+/usr/include/newlib/math.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h:
+/usr/include/newlib/sys/reent.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h:
+/usr/include/newlib/_ansi.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/newlib.h:
+/usr/include/newlib/newlib.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/config.h:
+/usr/include/newlib/sys/config.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/ieeefp.h:
+/usr/include/newlib/machine/ieeefp.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h:
+/usr/include/newlib/sys/_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_types.h:
+/usr/include/newlib/machine/_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h:
+/usr/include/newlib/sys/lock.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/cdefs.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h:
+/usr/include/newlib/_ansi.h:

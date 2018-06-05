@@ -8,6 +8,7 @@
 #include <dbus.h>
 #include "ch.h"
 #include "hal.h"
+#include "string.h"
 
 #include "canBusProcess.h"
 #include "dbus.h"
@@ -151,15 +152,6 @@ static void can_processEncoderMessage(CANDriver* const canp, const CANRxFrame* c
   }
 }
 
-static THD_WORKING_AREA(can_gimbal_send_wa, 256);
-static THD_FUNCTION(can_gimbal_send, p){
-    (void) p;
-    while(!chThdShouldTerminateX()){
-        can_gimbal_send_dbus(&CAND1);
-        chThdSleepMilliseconds(1);
-    }
-}
-
 /*
  * Receiver thread.
  */
@@ -226,32 +218,6 @@ void can_motorSetCurrent(CANDriver *const CANx,
     canTransmit(CANx, CAN_ANY_MAILBOX, &txmsg, MS2ST(100));
 }
 
-void can_gimbal_send_dbus(CANDriver *const CANx){
-    CANTxFrame txmsg;
-
-    txmsg.IDE = CAN_IDE_STD;
-    txmsg.SID = CAN_GIMBAL_SEND_DBUS_ID;
-    txmsg.RTR = CAN_RTR_DATA;
-    txmsg.DLC = 0x08;
-
-    chSysLock();
-    txmsg.data8[0] = (uint8_t)( (P_Get_Dbus->rc.channel0) >> 8);
-    txmsg.data8[1] = (uint8_t)(P_Get_Dbus->rc.channel0);
-
-    txmsg.data8[2] = (uint8_t)( (P_Get_Dbus->rc.channel1) >> 8);
-    txmsg.data8[3] = (uint8_t)(P_Get_Dbus->rc.channel1);
-
-    txmsg.data8[4] = (uint8_t)(P_Get_Dbus->rc.s1);
-    txmsg.data8[5] = (uint8_t)(P_Get_Dbus->rc.s2);
-
-    txmsg.data8[6] = (uint8_t)( (P_Get_Dbus->keyboard.key_code) >> 8);
-    txmsg.data8[7] = (uint8_t)(P_Get_Dbus->keyboard.key_code);
-    chSysUnlock();
-    canTransmit(CANx, CAN_ANY_MAILBOX, &txmsg, MS2ST(100));
-
-}
-
-
 void can_processInit(void)
 {
 
@@ -285,9 +251,5 @@ void can_processInit(void)
   chThdCreateStatic(can_rx2_wa, sizeof(can_rx2_wa), NORMALPRIO + 7,
                     can_rx, (void *)&CAND2);
 
-    chThdCreateStatic(can_gimbal_send_wa, sizeof(can_gimbal_send_wa), NORMALPRIO + 7,
-                      can_gimbal_send, NULL);
-
-
-    chThdSleepMilliseconds(20);
+  chThdSleepMilliseconds(20);
 }

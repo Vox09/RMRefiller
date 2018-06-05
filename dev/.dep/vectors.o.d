@@ -1,12 +1,10 @@
 build/obj/vectors.o: ../os/common/ports/ARMCMx/compilers/GCC/vectors.c \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
+ /usr/include/newlib/stdint.h \
+ /usr/include/newlib/machine/_default_types.h \
+ /usr/include/newlib/sys/features.h /usr/include/newlib/sys/_intsup.h \
+ /usr/include/newlib/sys/_stdint.h \
  ../os/common/ports/ARMCMx/compilers/GCC/vectors.h \
  ../os/common/ports/ARMCMx/devices/STM32F4xx/cmparams.h ../hw/board.h \
  ../os/ext/CMSIS/ST/STM32F4xx/stm32f4xx.h \
@@ -17,21 +15,19 @@ build/obj/vectors.o: ../os/common/ports/ARMCMx/compilers/GCC/vectors.c \
  ../os/ext/CMSIS/include/core_cmSimd.h \
  ../os/ext/CMSIS/ST/STM32F4xx/system_stm32f4xx.h
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h:
+/usr/include/newlib/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h:
+/usr/include/newlib/machine/_default_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h:
+/usr/include/newlib/sys/features.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h:
+/usr/include/newlib/sys/_intsup.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h:
+/usr/include/newlib/sys/_stdint.h:
 
 ../os/common/ports/ARMCMx/compilers/GCC/vectors.h:
 

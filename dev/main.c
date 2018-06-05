@@ -16,55 +16,6 @@
 #include "main.h"
 
 static BaseSequentialStream* chp = (BaseSequentialStream*)&SDU1;
-static const IMUConfigStruct imu1_conf =
-  {&SPID5, MPU6500_ACCEL_SCALE_8G, MPU6500_GYRO_SCALE_250, MPU6500_AXIS_REV_X|MPU6500_AXIS_REV_Y};
-
-static const magConfigStruct mag1_conf =
-  {IST8310_ADDR_FLOATING, 200, IST8310_AXIS_REV_NO};
-
-PIMUStruct pIMU;
-PGyroStruct pGyro;
-
-#define MPU6500_UPDATE_PERIOD_US 1000000U/MPU6500_UPDATE_FREQ
-static THD_WORKING_AREA(Attitude_thread_wa, 4096);
-static THD_FUNCTION(Attitude_thread, p)
-{
-  chRegSetThreadName("IMU Attitude Estimator");
-
-  (void)p;
-
-  imuInit(pIMU, &imu1_conf);
-  ist8310_init(&mag1_conf);
-
-  chThdSleepSeconds(3);
-  attitude_imu_init(pIMU);
-
-  uint32_t tick = chVTGetSystemTimeX();
-
-  while(true)
-  {
-    tick += US2ST(MPU6500_UPDATE_PERIOD_US);
-    if(chVTGetSystemTimeX() < tick)
-      chThdSleepUntil(tick);
-    else
-    {
-      tick = chVTGetSystemTimeX();
-      pIMU->errorCode |= IMU_LOSE_FRAME;
-    }
-
-    imuGetData(pIMU);
-    ist8310_update();
-
-    attitude_update(pIMU);
-
-    if(pIMU->accelerometer_not_calibrated || pIMU->gyroscope_not_calibrated)
-    {
-      chSysLock();
-      chThdSuspendS(&(pIMU->imu_Thd));
-      chSysUnlock();
-    }
-  }
-}
 
 /*
  * Application entry point.
@@ -82,24 +33,15 @@ int main(void) {
   halInit();
   chSysInit();
 
-	rangeFinder_init();
   shellStart();
   params_init();
+  extiinit();
+
   can_processInit();
   RC_init();
-	chassis_init();
-
-	extiinit();
-
-  tempControllerInit(); //*
-  pGyro = gyro_init();
-  pIMU = imu_get(); //*
+  rangeFinder_init();
 
 	sdlog_init();
-	lift_init();
-
-	chThdCreateStatic(Attitude_thread_wa, sizeof(Attitude_thread_wa),
-										NORMALPRIO + 5, Attitude_thread, NULL); //*
 
 	// ====================================================================================================
 	// REFILLER SETUP: BEGIN
@@ -112,7 +54,8 @@ int main(void) {
 	int bullet_count [2] = {0, 0};
 	uint32_t timer [2] = {0, 0};
 	int error_count;
-	ChassisEncoder_canStruct* feeder_encoder;
+
+  ChassisEncoder_canStruct* feeder_encoder;
 	feeder_encoder = can_getChassisMotor();
 
 	// FUNCTIONS
@@ -133,8 +76,8 @@ int main(void) {
 		// ====================================================================================================
 
 		// Calculate the distance from rangefinder sensors on both sides of the Refiller
-		distance [TANK_SX] = rangeFinder_getDistance(1)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
-		distance [TANK_DX] = rangeFinder_getDistance(0)/(1+999*( chVTGetSystemTimeX() <= RANGEFINDER_WARM_UP));
+		distance [TANK_SX] = rangeFinder_getDistance(RANGEFINDER_INDEX_1);
+		distance [TANK_DX] = rangeFinder_getDistance(RANGEFINDER_INDEX_0);
 		// The chVTGetSystemTimeX() workaround is needed since on startup the position is 1000 times the
 		// correct one (WARMUP is empirical) TODO: solve the rangefinder bug
 
@@ -188,11 +131,13 @@ int main(void) {
 			timer[TANK_DX] = 0;
 		}
 
+    int i;
 		// If the robot has been present for more than 4 seconds stop the motor and refill
 		if (timer[TANK_SX] > 400){
 			// Stop the motor if it is running to avoid wasting bullets
 			// Need to send the message more than once for it to take action immediately
-			for (int i = 0; i < 10; i++)
+
+			for (i = 0; i < 10; i++)
 				feeder_write (0);
 
 			// Actuate the Servo Motor to open the tank for 3 seconds, then close
@@ -208,7 +153,7 @@ int main(void) {
 		// If the robot has been present for more than 4 seconds refill
 		if (timer[TANK_DX] > 400){
 			// Stop the motor if it is running to avoid wasting balls
-			for (int i = 0; i < 10; i++)
+			for (i = 0; i < 10; i++)
 				feeder_write (0);
 			chThdSleepMilliseconds(100);
 

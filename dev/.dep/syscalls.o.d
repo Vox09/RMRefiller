@@ -1,46 +1,24 @@
 build/obj/syscalls.o: ../os/various/syscalls.c \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdlib.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/ieeefp.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/newlib.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/config.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/cdefs.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/stdlib.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/alloca.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/errno.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/errno.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/string.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/xlocale.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/string.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/stat.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/time.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/time.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/types.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/endian.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_endian.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/select.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_sigset.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_timeval.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/timespec.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_timespec.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_pthreadtypes.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/types.h \
+ /usr/include/newlib/stdlib.h /usr/include/newlib/machine/ieeefp.h \
+ /usr/include/newlib/_ansi.h /usr/include/newlib/newlib.h \
+ /usr/include/newlib/sys/config.h /usr/include/newlib/sys/features.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h \
+ /usr/include/newlib/sys/reent.h /usr/include/newlib/_ansi.h \
+ /usr/include/newlib/sys/_types.h /usr/include/newlib/machine/_types.h \
+ /usr/include/newlib/machine/_default_types.h \
+ /usr/include/newlib/sys/lock.h /usr/include/newlib/sys/cdefs.h \
+ /usr/include/newlib/machine/stdlib.h /usr/include/newlib/alloca.h \
+ /usr/include/newlib/errno.h /usr/include/newlib/sys/errno.h \
+ /usr/include/newlib/string.h /usr/include/newlib/sys/string.h \
+ /usr/include/newlib/sys/stat.h /usr/include/newlib/time.h \
+ /usr/include/newlib/machine/time.h /usr/include/newlib/sys/types.h \
+ /usr/include/newlib/sys/_stdint.h /usr/include/newlib/machine/types.h \
+ /usr/include/newlib/sys/timespec.h /usr/include/newlib/sys/_timespec.h \
  ../os/rt/include/ch.h ../os/rt/ports/ARMCMx/compilers/GCC/chtypes.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h \
- /usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h \
- chconf.h ../os/rt/include/chlicense.h ../os/rt/include/chsystypes.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
+ /usr/include/newlib/stdint.h /usr/include/newlib/sys/_intsup.h \
+ /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h chconf.h \
+ ../os/rt/include/chlicense.h ../os/rt/include/chsystypes.h \
  ../os/rt/ports/ARMCMx/chcore.h \
  ../os/common/ports/ARMCMx/devices/STM32F4xx/cmparams.h ../hw/board.h \
  ../os/ext/CMSIS/ST/STM32F4xx/stm32f4xx.h \
@@ -65,89 +43,73 @@ build/obj/syscalls.o: ../os/various/syscalls.c \
  ../os/rt/include/chmempools.h ../os/rt/include/chdynamic.h \
  ../os/rt/include/chqueues.h ../os/rt/include/chstreams.h
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdlib.h:
+/usr/include/newlib/stdlib.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/ieeefp.h:
+/usr/include/newlib/machine/ieeefp.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h:
+/usr/include/newlib/_ansi.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/newlib.h:
+/usr/include/newlib/newlib.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_newlib_version.h:
+/usr/include/newlib/sys/config.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/config.h:
+/usr/include/newlib/sys/features.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/features.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h:
+/usr/include/newlib/sys/reent.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h:
+/usr/include/newlib/_ansi.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/_ansi.h:
+/usr/include/newlib/sys/_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h:
+/usr/include/newlib/machine/_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_types.h:
+/usr/include/newlib/machine/_default_types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_types.h:
+/usr/include/newlib/sys/lock.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h:
+/usr/include/newlib/sys/cdefs.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/cdefs.h:
+/usr/include/newlib/machine/stdlib.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/stdlib.h:
+/usr/include/newlib/alloca.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/alloca.h:
+/usr/include/newlib/errno.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/errno.h:
+/usr/include/newlib/sys/errno.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/errno.h:
+/usr/include/newlib/string.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/string.h:
+/usr/include/newlib/sys/string.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/xlocale.h:
+/usr/include/newlib/sys/stat.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/string.h:
+/usr/include/newlib/time.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/stat.h:
+/usr/include/newlib/machine/time.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/time.h:
+/usr/include/newlib/sys/types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/time.h:
+/usr/include/newlib/sys/_stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/types.h:
+/usr/include/newlib/machine/types.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h:
+/usr/include/newlib/sys/timespec.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/endian.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_endian.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/select.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_sigset.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_timeval.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/timespec.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_timespec.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_pthreadtypes.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/types.h:
+/usr/include/newlib/sys/_timespec.h:
 
 ../os/rt/include/ch.h:
 
 ../os/rt/ports/ARMCMx/compilers/GCC/chtypes.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdint.h:
+/usr/include/newlib/stdint.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_intsup.h:
+/usr/include/newlib/sys/_intsup.h:
 
-/usr/local/Caskroom/gcc-arm-embedded/6-2017-q2-update/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h:
+/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
 
 chconf.h:
 

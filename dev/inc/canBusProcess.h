@@ -5,7 +5,6 @@
 #include "stdbool.h"
 #include "hal.h"
 #include "string.h"
-#include "adis16265.h"
 
 #define GIMBAL_MOTOR_NUM  2U
 #define CHASSIS_MOTOR_NUM 4U

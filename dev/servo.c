@@ -11,14 +11,14 @@
 static PWMConfig pwmcfg = {
     1000000,	// 1MHz PWM clock frequency
     20000,		// PWM period 20 milliseconds
-	NULL,		// no callback
+	  NULL,		// no callback
 		{
 						{PWM_OUTPUT_ACTIVE_HIGH, NULL},
 						{PWM_OUTPUT_ACTIVE_HIGH, NULL},
 						{PWM_OUTPUT_DISABLED, NULL},
 						{PWM_OUTPUT_DISABLED, NULL}
 		},
-	NULL,		// channel configuration set dynamically in servoInit()
+	  NULL,		// channel configuration set dynamically in servoInit()
     0
 };
 
@@ -42,7 +42,7 @@ void servoSetValue(Servo *servo, uint16_t value) {
 }
 
 void servoSetMax(Servo *servo, uint16_t value) {
-	servo->max = value;	
+	servo->max = value;
 }
 
 void servoSetMin(Servo *servo, uint16_t value) {
@@ -56,4 +56,3 @@ uint16_t servoGetMax(Servo *servo) {
 uint16_t servoGetMin(Servo *servo) {
 	return (servo->min);
 }
-
