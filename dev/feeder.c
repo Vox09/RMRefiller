@@ -9,18 +9,18 @@
 
 #include "feeder.h"
 
-#define FEEDER_SPEED_SP_RPM     FEEDER_SET_RPS * FEEDER_GEAR * 60 / FEEDER_BULLET_PER_TURN
+#define FEEDER_SPEED_SP_RPM     (float)(FEEDER_SET_RPS * FEEDER_GEAR * 60 / FEEDER_BULLET_PER_TURN)
 #define FEEDER_TURNBACK_ANGLE   360.0f / FEEDER_BULLET_PER_TURN     //165.0f;
 
 static int16_t        feeder_output;
 
-static uint8_t        feeder_fire_mode = FEEDER_AUTO; //User selection of firing mode
-static feeder_mode_t  feeder_mode = FEEDER_STOP;
+static feeder_mode_t  feeder_state = FEEDER_STOP;
 static float          feeder_brakePos = 0.0f;
 static systime_t      feeder_start_time;
 static systime_t      bullet_out_time;
 static systime_t      feeder_stop_time;
-static thread_reference_t rune_singleShot_thread = NULL;
+
+static thread_reference_t refiller_thread = NULL; //Used for refiller
 
 ChassisEncoder_canStruct*   feeder_encode;
 RC_Ctl_t*                   p_dbus;
@@ -32,8 +32,8 @@ pid_struct  rest_pid /*= {0.45, 0, 0, 0, 0}*/;
 
 uint16_t error_count = 0;
 
-static uint32_t bulletCount      = 0;
-static uint32_t bulletCount_stop = 0;
+static uint32_t bulletCount[2];
+static uint32_t bulletCount_stop[2];
 
 int16_t feeder_canUpdate(void)
 {
@@ -45,63 +45,51 @@ int16_t feeder_canUpdate(void)
   #endif
 }
 
-static void feeder_brake(void)
+void feeder_brake(void)
 {
   feeder_brakePos = (float)feeder_encode->total_ecd;
   feeder_stop_time = chVTGetSystemTimeX();
+  feeder_state = FEEDER_FINISHED;
 }
 
-void feeder_bulletOut(void)
+/*
+ *  @brief            bullet counting update function
+ *  @param[in] dir  (for dual-direction feeder)index of direction
+ */
+void feeder_bulletOut(uint8_t dir)
 {
+  if(dir != FEEDER_CW && dir != FEEDER_CCW)
+    return;
+
   if(chVTGetSystemTimeX() > bullet_out_time + MS2ST(10))
-  {
-    bulletCount++;
+  {feeder_brake();
+    bulletCount[dir]++;
     bullet_out_time = chVTGetSystemTimeX();
 
-    #ifdef FEEDER_USE_BOOST
-      if(feeder_mode == FEEDER_BOOST)
-      {
-        if(rune_singleShot_thread == NULL) //Disable mode selection during rune shooting
-          feeder_mode = feeder_fire_mode;// TODO: select fire mode using keyboard input
-        else
-          feeder_mode = FEEDER_SINGLE;
-
-        switch(feeder_mode)
-        {
-          case FEEDER_SINGLE:
-            bulletCount_stop = bulletCount;
-            break;
-          case FEEDER_AUTO:
-            bulletCount_stop = (uint32_t)(-1);  //Never stop!!! KILL THEM ALL!!!
-            break;
-        }
-      }
-    #endif
-
-    if(bulletCount > bulletCount_stop)
+    if(bulletCount[dir] > bulletCount_stop[dir])
     {
-      if(rune_singleShot_thread != NULL)
-      {
-        chThdResumeI(&rune_singleShot_thread, MSG_OK);
-        rune_singleShot_thread = NULL;
-      }
       feeder_brake();
-      feeder_mode = FEEDER_FINISHED;
+      if(refiller_thread != NULL)
+      {
+        chThdResumeI(&refiller_thread, MSG_OK);
+        refiller_thread = NULL;
+      }
     }
   }
 }
 
-void feeder_singleShot(void)
+/*
+ *  @brief                  refiller control function
+ *  @param[in] dir          (for dual-direction feeder)index of direction
+ *  @param[in] bullet_num   bullets to deliver
+ */
+void feeder_refill(uint8_t dir, const uint32_t bullet_num)
 {
-  #ifdef FEEDER_USE_BOOST
-    feeder_mode = FEEDER_BOOST;
-  #else
-    feeder_mode = FEEDER_SINGLE;
-  #endif
-
-  chSysLock();
-  chThdSuspendS(&rune_singleShot_thread);
-  chSysUnlock();
+  if(feeder_state == FEEDER_STOP)
+  {
+    feeder_state = (dir == FEEDER_CW) ? FEEDER_AUTO_CW : FEEDER_AUTO_CCW;
+    bulletCount_stop[dir] = bulletCount[dir] + bullet_num;
+  }
 }
 
 static void feeder_rest(void)
@@ -154,7 +142,7 @@ static int16_t feeder_controlPos(const float target, const float output_max){
 
 static void feeder_func(){
     feeder_output = 0.0f;
-    switch (feeder_mode){
+    switch (feeder_state){
         case FEEDER_FINISHED:
         case FEEDER_STOP:
             if(chVTGetSystemTimeX() > feeder_stop_time + S2ST(1))
@@ -163,13 +151,8 @@ static void feeder_func(){
               feeder_output = feeder_controlPos(feeder_brakePos, FEEDER_OUTPUT_MAX);
 
             break;
-        case FEEDER_SINGLE:
-            if(chVTGetSystemTimeX() - feeder_start_time > MS2ST(2000))
-            {
-              feeder_mode = FEEDER_FINISHED;
-              feeder_brake();
-            }
-        case FEEDER_AUTO:
+        case FEEDER_CW:
+        case FEEDER_AUTO_CW:
             //error detecting
             if (
                  state_count((feeder_encode->raw_speed < 30) &&
@@ -191,11 +174,29 @@ static void feeder_func(){
             feeder_output = feeder_controlVel(FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
 
             break;
-        #ifdef FEEDER_USE_BOOST
-          case FEEDER_BOOST:
-            feeder_output = FEEDER_BOOST_POWER;
+        case FEEDER_CCW:
+        case FEEDER_AUTO_CCW:
+            //error detecting
+            if (
+                     state_count((feeder_encode->raw_speed < 30) &&
+                                 (feeder_encode->raw_speed > -30),
+                     FEEDER_ERROR_COUNT, &error_count)
+               )
+            {
+                float error_angle_sp = feeder_encode->total_ecd +
+                  FEEDER_TURNBACK_ANGLE / 360.0f * FEEDER_GEAR * 8192;
+                systime_t error_start_time = chVTGetSystemTime();
+                while (chVTIsSystemTimeWithin(error_start_time, (error_start_time + MS2ST(200))))
+                {
+                  feeder_output = feeder_controlPos(error_angle_sp, FEEDER_OUTPUT_MAX_BACK);
+                  feeder_canUpdate();
+                  chThdSleepMilliseconds(1);
+                }
+            }
+
+            feeder_output = feeder_controlVel(-FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
+
             break;
-        #endif //FEEDER_USE_BOOST
         default:
             feeder_output = 0;
             break;
@@ -213,37 +214,26 @@ static THD_FUNCTION(feeder_control, p){
         feeder_func();
 
         if(
-            feeder_mode == FEEDER_STOP &&
-            (p_dbus->rc.s1 == RC_S_DOWN || p_dbus->mouse.LEFT)
+            feeder_state == FEEDER_STOP &&
+            (p_dbus->rc.s1 == RC_S_DOWN)
           )
         {
           feeder_start_time = chVTGetSystemTimeX();
-
-          #ifdef FEEDER_USE_BOOST
-            feeder_mode = FEEDER_BOOST;
-          #else
-            feeder_mode = feeder_fire_mode;// TODO: select fire mode using keyboard input
-            switch(feeder_mode)
-            {
-              case FEEDER_SINGLE:
-                bulletCount_stop = bulletCount + 1;
-                break;
-              case FEEDER_AUTO:
-                bulletCount_stop = (uint32_t)(-1);  //Never stop!!! KILL THEM ALL!!!
-                break;
-            }
-          #endif
+          feeder_state = FEEDER_CW;
         }
-        else if(p_dbus->rc.s1 != RC_S_DOWN && !p_dbus->mouse.LEFT)
+        else if(
+            feeder_state == FEEDER_STOP &&
+            (p_dbus->rc.s1 == RC_S_UP)
+          )
         {
-          if(feeder_mode == FEEDER_AUTO)
-          {
-            feeder_brake();
-            feeder_mode = FEEDER_STOP;
-          }
-          else if(feeder_mode == FEEDER_FINISHED)
-            feeder_mode = FEEDER_STOP;
+          feeder_start_time = chVTGetSystemTimeX();
+          feeder_state = FEEDER_CCW;
         }
+        else if((feeder_state == FEEDER_CW || feeder_state == FEEDER_CCW) &&
+                p_dbus->rc.s1 == RC_S_MIDDLE)
+          feeder_brake();
+        else if(feeder_state == FEEDER_FINISHED)
+          feeder_state = FEEDER_STOP;
         chThdSleepMilliseconds(1);
     }
 }
@@ -252,9 +242,10 @@ static const FEEDER_VEL  = "FEEDER_VEL";
 static const FEEDER_POS  = "FEEDER_POS";
 static const FEEDER_rest_name = "FEEDER_REST";
 static const char subname_feeder_PID[] = "KP KI KD Imax";
-void feederInit(void){
+void feeder_init(void)
+{
 
-    feeder_encode = can_getFeederMotor();
+    feeder_encode = can_getChassisMotor();
     p_dbus = RC_get();
 
     params_set(&vel_pid, 14,4,FEEDER_VEL,subname_feeder_PID,PARAM_PUBLIC);

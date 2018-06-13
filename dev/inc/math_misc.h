@@ -7,6 +7,7 @@
 
 #define FLT_EPSILON        1.1920929e-07F
 #define M_PI_2_F    (float)(M_PI/2)
+#define DEG2RAD(x)  (x * 0.0174533f)
 
 /**
  * @source pixhawk/src/lib/mathlib/math/filter/LowPassFilter2p.cpp
@@ -37,7 +38,7 @@ static inline void bound(float* input, const float max)
 static inline float boundOutput(const float input, const float max)
 {
   float output;
-  if(input < max && input > -max)
+  if(input <= max && input >= -max)
     output = input;
   else if(input > max)
     output = max;
@@ -50,6 +51,11 @@ static inline float boundOutput(const float input, const float max)
 // MATH function
 static inline float mapInput(float x, float in_min, float in_max, float out_min, float out_max)
 {
+  if(x >= in_max)
+    return out_max;
+  else if(x <= in_min)
+    return out_min;
+
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
@@ -225,6 +231,6 @@ void lpfilter_init(lpfilterStruct* const lp,
 
 float lpfilter_apply(lpfilterStruct* const lp, const float input);
 
-bool threshold_count(const bool statement, const uint16_t count, uint16_t* const curr_count);
+bool state_count(const bool statement, const uint16_t count, uint16_t* const curr_count);
 
 #endif
