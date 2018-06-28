@@ -97,7 +97,6 @@ file(GLOB_RECURSE SHELL_SRC "os/various/shell.c" "os/various/evtimer.c" "os/vari
         "os/hal/lib/streams/memstreams.c" "os/hal/lib/streams/chprintf.c")
 include_directories(os/various os/hal/lib/streams)
 
-add_library(USER ${USER_SRC} dev/gimbal_sys_iden.c)
 add_library(STARTUP ${STARTUP_SRC} os/common/ports/ARMCMx/compilers/GCC/crt0_v7m.s)
 add_library(HAL ${HAL_SRC})
 add_library(PLATFORM ${PLATFORM_SRC})
@@ -107,6 +106,7 @@ add_library(RTOS ${RTOS_SRC})
 add_library(PORT ${PORT_SRC} os/rt/ports/ARMCMx/compilers/GCC/chcoreasm_v7m.s)
 add_library(SHELL ${SHELL_SRC})
 
+add_library(USER ${USER_SRC})
 # TODO: compile with CMakefile.txt
 #add_definitions(-DSTM32F427xx)
 #add_executable(${PROJECT_NAME}.elf ${USER_SRC} ${LINKER_SCRIPT})

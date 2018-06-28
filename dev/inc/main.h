@@ -17,6 +17,7 @@
 #include "rangefinder.h"
 #include "exti.h"
 #include "sdlog.h"
+#include "servo.h"
 
 void shellStart(void);
 
@@ -26,13 +27,15 @@ void shellStart(void);
  * ===============================================================================================
 */
 
-#define LEFT -1
-#define RIGHT 1
-#define TANK_SX 0
-#define TANK_DX 1
-#define FEEDER_MOTOR_SPEED 1200
-#define BULLETS_MAX 100
-#define BULLETS_PER_CYCLE 6
+#define LEFT 1
+#define RIGHT 0
+#define BULLETS_MAX 10
 #define SET_DISTANCE 5
+#define DOOR_DELAY 1000
 
+//#define DEBUG
 #endif
+/*
+ * 200 bullets when game start
+ * then 150 bullets per min
+ */

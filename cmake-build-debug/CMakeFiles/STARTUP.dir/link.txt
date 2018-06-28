@@ -1,2 +1,2 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libSTARTUP.a  CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/crt1.c.o CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/vectors.c.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libSTARTUP.a
+/usr/bin/ar qc libSTARTUP.a  CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/crt1.c.o CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/vectors.c.o
+/usr/bin/ranlib libSTARTUP.a

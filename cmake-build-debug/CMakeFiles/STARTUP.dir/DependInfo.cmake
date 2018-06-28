@@ -4,10 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/David/Documents/GitHub/Robomaster/Refiller_Clean/os/common/ports/ARMCMx/compilers/GCC/crt1.c" "/Users/David/Documents/GitHub/Robomaster/Refiller_Clean/cmake-build-debug/CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/crt1.c.o"
-  "/Users/David/Documents/GitHub/Robomaster/Refiller_Clean/os/common/ports/ARMCMx/compilers/GCC/vectors.c" "/Users/David/Documents/GitHub/Robomaster/Refiller_Clean/cmake-build-debug/CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/vectors.c.o"
+  "/home/destinxxy/Documents/RM2018/RMRefiller/os/common/ports/ARMCMx/compilers/GCC/crt1.c" "/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/crt1.c.o"
+  "/home/destinxxy/Documents/RM2018/RMRefiller/os/common/ports/ARMCMx/compilers/GCC/vectors.c" "/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles/STARTUP.dir/os/common/ports/ARMCMx/compilers/GCC/vectors.c.o"
   )
-set(CMAKE_C_COMPILER_ID "AppleClang")
+set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH

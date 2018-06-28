@@ -9,115 +9,80 @@
 
 #include "feeder.h"
 
-#define FEEDER_SPEED_SP_RPM     (float)(FEEDER_SET_RPS * FEEDER_GEAR * 60 / FEEDER_BULLET_PER_TURN)
+#define FEEDER_SPEED_SP_RPM     (float)(FEEDER_SET_BPS * FEEDER_GEAR * 60 /FEEDER_BULLET_PER_TURN)
 #define FEEDER_TURNBACK_ANGLE   360.0f / FEEDER_BULLET_PER_TURN     //165.0f;
 
-static int16_t        feeder_output;
-
-static feeder_mode_t  feeder_state = FEEDER_STOP;
-static float          feeder_brakePos = 0.0f;
-static systime_t      feeder_start_time;
-static systime_t      bullet_out_time;
-static systime_t      feeder_stop_time;
-
-static thread_reference_t refiller_thread = NULL; //Used for refiller
-
-ChassisEncoder_canStruct*   feeder_encode;
-RC_Ctl_t*                   p_dbus;
-static lpfilterStruct lp_spd_feeder;
-
-pid_struct  vel_pid /*= {0, 0, 0, 0}*/;
-pid_struct  pos_pid /*= {5.0, 0, 0, 0, 0}*/;
-pid_struct  rest_pid /*= {0.45, 0, 0, 0, 0}*/;
-
-uint16_t error_count = 0;
-
-static uint32_t bulletCount[2];
-static uint32_t bulletCount_stop[2];
-
-int16_t feeder_canUpdate(void)
-{
-  #if (FEEDER_CAN_EID == 0x1FF)
+static int16_t        feeder_output[2];
+int16_t *getFeederOutput(){
     return feeder_output;
-  #elif (FEEDER_CAN_EID == 0x200)
-    can_motorSetCurrent(FEEDER_CAN, FEEDER_CAN_EID,\
-        feeder_output, 0, 0, 0);
-  #endif
 }
 
-void feeder_brake(void)
+static feeder_mode_t  feeder_state[2] = {FEEDER_STOP,FEEDER_STOP};
+static float          feeder_brakePos[2] = {0.0f, 0.0f};
+static systime_t      feeder_stop_time[2];
+
+static volatile ChassisEncoder_canStruct*   feeder_encode;
+RC_Ctl_t*                   p_dbus;
+static lpfilterStruct lp_spd_feeder[2];
+
+pid_struct  vel_pid[2] /*= {0, 0, 0, 0}*/;
+pid_struct  pos_pid[2] /*= {5.0, 0, 0, 0, 0}*/;
+pid_struct  rest_pid[2] /*= {0.45, 0, 0, 0, 0}*/;
+
+uint16_t error_count[2] = {0,0};
+
+
+void feeder_canUpdate(uint8_t i)
 {
-  feeder_brakePos = (float)feeder_encode->total_ecd;
-  feeder_stop_time = chVTGetSystemTimeX();
-  feeder_state = FEEDER_FINISHED;
+    if(i == RIGHT)
+        can_motorSetCurrent(FEEDER_CAN, FEEDERR_CAN_EID,\
+        feeder_output[RIGHT], 0, 0, 0);
+    else
+        can_motorSetCurrent(FEEDER_CAN, FEEDERL_CAN_EID,\
+        feeder_output[LEFT], 0, 0, 0);
 }
 
-/*
- *  @brief            bullet counting update function
- *  @param[in] dir  (for dual-direction feeder)index of direction
- */
-void feeder_bulletOut(uint8_t dir)
+void feeder_brake(uint8_t i)
 {
-  if(dir != FEEDER_CW && dir != FEEDER_CCW)
-    return;
-
-  if(chVTGetSystemTimeX() > bullet_out_time + MS2ST(10))
-  {feeder_brake();
-    bulletCount[dir]++;
-    bullet_out_time = chVTGetSystemTimeX();
-
-    if(bulletCount[dir] > bulletCount_stop[dir])
-    {
-      feeder_brake();
-      if(refiller_thread != NULL)
-      {
-        chThdResumeI(&refiller_thread, MSG_OK);
-        refiller_thread = NULL;
-      }
+    if(feeder_state[i] == FEEDER_AUTO_GO) {
+        feeder_brakePos[i] = (float) feeder_encode[i].total_ecd;
+        feeder_stop_time[i] = chVTGetSystemTimeX();
+        feeder_state[i] = FEEDER_STOP;
     }
-  }
 }
 
-/*
- *  @brief                  refiller control function
- *  @param[in] dir          (for dual-direction feeder)index of direction
- *  @param[in] bullet_num   bullets to deliver
- */
-void feeder_refill(uint8_t dir, const uint32_t bullet_num)
+void feeder_refill(uint8_t i)
 {
-  if(feeder_state == FEEDER_STOP)
-  {
-    feeder_state = (dir == FEEDER_CW) ? FEEDER_AUTO_CW : FEEDER_AUTO_CCW;
-    bulletCount_stop[dir] = bulletCount[dir] + bullet_num;
-  }
+   if(feeder_state[i] == FEEDER_STOP)
+    feeder_state[i] =  FEEDER_AUTO_GO;
 }
 
-static void feeder_rest(void)
+static void feeder_rest(uint8_t i)
 {
-    int16_t current_speed = lpfilter_apply(&lp_spd_feeder, feeder_encode->raw_speed);
+    int16_t current_speed = lpfilter_apply(&lp_spd_feeder[i], feeder_encode[i].raw_speed);
     float error = - (float) current_speed;
-    rest_pid.inte += error * rest_pid.ki;
-    rest_pid.inte = rest_pid.inte > rest_pid.inte_max?  rest_pid.inte_max:rest_pid.inte;
-    rest_pid.inte = rest_pid.inte <-rest_pid.inte_max? -rest_pid.inte_max:rest_pid.inte;
+    rest_pid[i].inte += error * rest_pid[i].ki;
+    rest_pid[i].inte = rest_pid[i].inte > rest_pid[i].inte_max?  rest_pid[i].inte_max:rest_pid[i].inte;
+    rest_pid[i].inte = rest_pid[i].inte <-rest_pid[i].inte_max? -rest_pid[i].inte_max:rest_pid[i].inte;
 
-    feeder_output = rest_pid.kp * error + rest_pid.inte;
-    feeder_output = feeder_output > 4000?  4000:feeder_output;
-    feeder_output = feeder_output <-4000? -4000:feeder_output;
+    feeder_output[i] = rest_pid[i].kp * error + rest_pid[i].inte;
+    feeder_output[i] = feeder_output[i] > 4000?  4000:feeder_output[i];
+    feeder_output[i] = feeder_output[i] <-4000? -4000:feeder_output[i];
 }
 
-static int16_t feeder_controlVel(const float target, const float output_max){
-    static float last_error;
-    static float current_error;
+static int16_t feeder_controlVel(uint8_t i, float target, const float output_max){
+    static float last_error[2];
+    static float current_error[2];
 
-    last_error = current_error;
-    int16_t current_speed = feeder_encode->raw_speed;
-    current_speed = lpfilter_apply(&lp_spd_feeder, current_speed);
-    current_error = target - (float) current_speed;
-    vel_pid.inte += current_error * vel_pid.ki;
-    vel_pid.inte = vel_pid.inte > vel_pid.inte_max?  vel_pid.inte_max:vel_pid.inte;
-    vel_pid.inte = vel_pid.inte <-vel_pid.inte_max? -vel_pid.inte_max:vel_pid.inte;
+    last_error[i] = current_error[i];
+    int16_t current_speed = feeder_encode[i].raw_speed;
+    current_speed = lpfilter_apply(&(lp_spd_feeder[i]), current_speed);
+    current_error[i] = target - (float) current_speed;
+    vel_pid[i].inte += current_error[i] * vel_pid[i].ki;
+    vel_pid[i].inte = vel_pid[i].inte > vel_pid[i].inte_max?  vel_pid[i].inte_max:vel_pid[i].inte;
+    vel_pid[i].inte = vel_pid[i].inte <-vel_pid[i].inte_max? -vel_pid[i].inte_max:vel_pid[i].inte;
 
-    float output = vel_pid.kp * current_error + vel_pid.inte + vel_pid.kd * (current_error - last_error);
+    float output = vel_pid[i].kp * current_error[i] + vel_pid[i].inte + vel_pid[i].kd * (current_error[i] - last_error[i]);
     output = output > output_max?  output_max:output;
     output = output <-output_max? -output_max:output;
 
@@ -125,137 +90,111 @@ static int16_t feeder_controlVel(const float target, const float output_max){
 
 }
 
-static int16_t feeder_controlPos(const float target, const float output_max){
+static int16_t feeder_controlPos(uint8_t i, float target, const float output_max){
 
-    float error = target - (float)feeder_encode->total_ecd;
+    float error = target - (float)feeder_encode[i].total_ecd;
 
-    pos_pid.inte += error * pos_pid.ki;
-    pos_pid.inte = pos_pid.inte > pos_pid.inte_max?  pos_pid.inte_max:pos_pid.inte;
-    pos_pid.inte = pos_pid.inte <-pos_pid.inte_max? -pos_pid.inte_max:pos_pid.inte;
+    pos_pid[i].inte += error * pos_pid[i].ki;
+    pos_pid[i].inte = pos_pid[i].inte > pos_pid[i].inte_max?  pos_pid[i].inte_max:pos_pid[i].inte;
+    pos_pid[i].inte = pos_pid[i].inte <-pos_pid[i].inte_max? -pos_pid[i].inte_max:pos_pid[i].inte;
 
-    float speed_sp = pos_pid.kp * error +
-                     pos_pid.inte -
-                     pos_pid.kd * feeder_encode->raw_speed;
+    float speed_sp = pos_pid[i].kp * error +
+                     pos_pid[i].inte -
+                     pos_pid[i].kd * feeder_encode[i].raw_speed;
 
-    return feeder_controlVel(speed_sp, output_max);
+    return feeder_controlVel(i,speed_sp, output_max);
 }
 
-static void feeder_func(){
-    feeder_output = 0.0f;
-    switch (feeder_state){
-        case FEEDER_FINISHED:
+static void feeder_func(uint8_t i){
+    switch (feeder_state[i]){
         case FEEDER_STOP:
-            if(chVTGetSystemTimeX() > feeder_stop_time + S2ST(1))
-              feeder_rest();
+            if(chVTGetSystemTimeX() > feeder_stop_time[i] + S2ST(1))
+              feeder_rest(i);
             else
-              feeder_output = feeder_controlPos(feeder_brakePos, FEEDER_OUTPUT_MAX);
+              feeder_output[i] = feeder_controlPos(i,feeder_brakePos[i], FEEDER_OUTPUT_MAX);
 
             break;
-        case FEEDER_CW:
-        case FEEDER_AUTO_CW:
+        case FEEDER_GO:
+        case FEEDER_AUTO_GO:
             //error detecting
             if (
-                 state_count((feeder_encode->raw_speed < 30) &&
-                             (feeder_encode->raw_speed > -30),
-                 FEEDER_ERROR_COUNT, &error_count)
+                 state_count((feeder_encode[i].raw_speed < 30) &&
+                             (feeder_encode[i].raw_speed > -30),
+                 FEEDER_ERROR_COUNT, &(error_count[i]))
                )
             {
-              float error_angle_sp = feeder_encode->total_ecd -
+              float error_angle_sp = feeder_encode[i].total_ecd -
                 FEEDER_TURNBACK_ANGLE / 360.0f * FEEDER_GEAR * 8192;
               systime_t error_start_time = chVTGetSystemTime();
               while (chVTIsSystemTimeWithin(error_start_time, (error_start_time + MS2ST(200))))
               {
-                feeder_output = feeder_controlPos(error_angle_sp, FEEDER_OUTPUT_MAX_BACK);
-                feeder_canUpdate();
+                feeder_output[i] = feeder_controlPos(i,error_angle_sp, FEEDER_OUTPUT_MAX_BACK);
+                feeder_canUpdate(i);
                 chThdSleepMilliseconds(1);
               }
+                error_count[i] = 0;
             }
 
-            feeder_output = feeder_controlVel(FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
-
-            break;
-        case FEEDER_CCW:
-        case FEEDER_AUTO_CCW:
-            //error detecting
-            if (
-                     state_count((feeder_encode->raw_speed < 30) &&
-                                 (feeder_encode->raw_speed > -30),
-                     FEEDER_ERROR_COUNT, &error_count)
-               )
-            {
-                float error_angle_sp = feeder_encode->total_ecd +
-                  FEEDER_TURNBACK_ANGLE / 360.0f * FEEDER_GEAR * 8192;
-                systime_t error_start_time = chVTGetSystemTime();
-                while (chVTIsSystemTimeWithin(error_start_time, (error_start_time + MS2ST(200))))
-                {
-                  feeder_output = feeder_controlPos(error_angle_sp, FEEDER_OUTPUT_MAX_BACK);
-                  feeder_canUpdate();
-                  chThdSleepMilliseconds(1);
-                }
-            }
-
-            feeder_output = feeder_controlVel(-FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
-
+            feeder_output[i] = feeder_controlVel(i,FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
             break;
         default:
-            feeder_output = 0;
+            feeder_output[i] = 0;
             break;
     }
-
-    feeder_canUpdate();
+    feeder_canUpdate(i);
 }
 
-static THD_WORKING_AREA(feeder_control_wa, 512);
-static THD_FUNCTION(feeder_control, p){
+static THD_WORKING_AREA(feeder_control_R_wa,512);
+static THD_FUNCTION(feeder_control_R, p){
     (void) p;
-    chRegSetThreadName("feeder controller");
+    chRegSetThreadName("feeder controller_R");
     while(!chThdShouldTerminateX())
     {
-        feeder_func();
-
-        if(
-            feeder_state == FEEDER_STOP &&
-            (p_dbus->rc.s1 == RC_S_DOWN)
-          )
-        {
-          feeder_start_time = chVTGetSystemTimeX();
-          feeder_state = FEEDER_CW;
-        }
-        else if(
-            feeder_state == FEEDER_STOP &&
-            (p_dbus->rc.s1 == RC_S_UP)
-          )
-        {
-          feeder_start_time = chVTGetSystemTimeX();
-          feeder_state = FEEDER_CCW;
-        }
-        else if((feeder_state == FEEDER_CW || feeder_state == FEEDER_CCW) &&
-                p_dbus->rc.s1 == RC_S_MIDDLE)
-          feeder_brake();
-        else if(feeder_state == FEEDER_FINISHED)
-          feeder_state = FEEDER_STOP;
+        feeder_func(RIGHT);
         chThdSleepMilliseconds(1);
     }
 }
 
-static const FEEDER_VEL  = "FEEDER_VEL";
-static const FEEDER_POS  = "FEEDER_POS";
-static const FEEDER_rest_name = "FEEDER_REST";
+static THD_WORKING_AREA(feeder_control_L_wa, 512);
+static THD_FUNCTION(feeder_control_L, p){
+    (void) p;
+    chRegSetThreadName("feeder controller_L");
+    while(!chThdShouldTerminateX())
+    {
+        feeder_func(LEFT);
+        chThdSleepMilliseconds(1);
+    }
+}
+
+static const FEEDER_VEL_R  = "FEEDER_VEL_R";
+static const FEEDER_POS_R  = "FEEDER_POS_R";
+static const FEEDER_rest_name_R = "FEEDER_REST_R";
+static const FEEDER_VEL_L  = "FEEDER_VEL_L";
+static const FEEDER_POS_L  = "FEEDER_POS_L";
+static const FEEDER_rest_name_L = "FEEDER_REST_L";
 static const char subname_feeder_PID[] = "KP KI KD Imax";
 void feeder_init(void)
 {
 
-    feeder_encode = can_getChassisMotor();
+    feeder_encode = can_getFeederMotor();
     p_dbus = RC_get();
 
-    params_set(&vel_pid, 14,4,FEEDER_VEL,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&pos_pid, 15,4,FEEDER_POS,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&rest_pid, 16,4,FEEDER_rest_name,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&vel_pid[RIGHT], 11,4,FEEDER_VEL_R,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&pos_pid[RIGHT], 12,4,FEEDER_POS_R,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&rest_pid[RIGHT], 13,4,FEEDER_rest_name_R,subname_feeder_PID,PARAM_PUBLIC);
 
-    lpfilter_init(&lp_spd_feeder, 1000, 30);
-    feeder_brakePos = (float)feeder_encode->total_ecd;
+    params_set(&vel_pid[LEFT], 14,4,FEEDER_VEL_L,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&pos_pid[LEFT], 15,4,FEEDER_POS_L,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&rest_pid[LEFT], 16,4,FEEDER_rest_name_L,subname_feeder_PID,PARAM_PUBLIC);
 
-    chThdCreateStatic(feeder_control_wa, sizeof(feeder_control_wa),
-                     NORMALPRIO - 5, feeder_control, NULL);
+    lpfilter_init(&(lp_spd_feeder[RIGHT]), 1000, 30);
+    lpfilter_init(&(lp_spd_feeder[LEFT]), 1000, 30);
+    feeder_brakePos[RIGHT] = (float)feeder_encode[RIGHT].total_ecd;
+    feeder_brakePos[LEFT] = (float)feeder_encode[LEFT].total_ecd;
+
+    chThdCreateStatic(feeder_control_R_wa, sizeof(feeder_control_R_wa),
+                     NORMALPRIO - 5, feeder_control_R, NULL);
+    chThdCreateStatic(feeder_control_L_wa, sizeof(feeder_control_L_wa),
+                      NORMALPRIO - 5, feeder_control_L, NULL);
 
 }

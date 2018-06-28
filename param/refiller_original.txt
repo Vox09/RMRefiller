@@ -1,0 +1,19 @@
+--RMTunerEnterprize--2018-06-21-15-14-47--
+FEEDER_VEL
+ 14 False 4
+	0.58 KP 0 0
+	0.43 KI 0 1
+	0.0 KD 0 2
+	0.0 Imax 0 3
+FEEDER_POS
+ 15 False 4
+	0.15 KP 0 0
+	0.0 KI 0 1
+	0.0 KD 0 2
+	0.0 Imax 0 3
+FEEDER_REST
+ 16 False 4
+	0.0 KP 0 0
+	0.0 KI 0 1
+	0.0 KD 0 2
+	0.0 Imax 0 3

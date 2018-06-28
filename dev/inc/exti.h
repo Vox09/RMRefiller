@@ -8,6 +8,7 @@
 #ifndef INC_EXTI_H_
 #define INC_EXTI_H_
 
+#define DEBOUNCE_TIME 60
 void extiinit(void);
 
 #endif /* INC_EXTI_H_ */

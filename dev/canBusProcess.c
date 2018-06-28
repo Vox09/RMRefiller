@@ -4,8 +4,7 @@
  * @brief   CAN driver configuration file
  * @reference   RM2017_Archive
  */
-#include <canBusProcess.h>
-#include <dbus.h>
+
 #include "ch.h"
 #include "hal.h"
 #include "string.h"
@@ -15,9 +14,9 @@
 
 RC_Ctl_t* P_Get_Dbus;
 
-static volatile GimbalEncoder_canStruct  gimbal_encoder[GIMBAL_MOTOR_NUM];
-static volatile ChassisEncoder_canStruct chassis_encoder[CHASSIS_MOTOR_NUM];
-static volatile ChassisEncoder_canStruct extra_encoder[EXTRA_MOTOR_NUM];
+
+static volatile ChassisEncoder_canStruct feeder_encoder[FEEDER_MOTOR_NUM];
+
 
 /*
  * 500KBaud, automatic wakeup, automatic recover
@@ -33,20 +32,12 @@ static const CANConfig cancfg = {
 #define CAN_FILTER_NUM 28U
 static CANFilter canfilter[CAN_FILTER_NUM];
 
-volatile GimbalEncoder_canStruct* can_getGimbalMotor(void)
+
+volatile ChassisEncoder_canStruct* can_getFeederMotor(void)
 {
-  return gimbal_encoder;
+  return feeder_encoder;
 }
 
-volatile ChassisEncoder_canStruct* can_getChassisMotor(void)
-{
-  return chassis_encoder;
-}
-
-volatile ChassisEncoder_canStruct* can_getExtraMotor(void)
-{
-  return extra_encoder;
-}
 
 static inline void can_getMotorOffset
         (volatile ChassisEncoder_canStruct* cm, const CANRxFrame* const rxmsg)
@@ -82,74 +73,19 @@ static inline void can_processChassisEncoder
     cm->radian_angle = cm->total_ecd * CAN_ENCODER_RADIAN_RATIO;
 }
 
-static inline void can_processGimbalEncoder
-  (volatile GimbalEncoder_canStruct* gm, const CANRxFrame* const rxmsg)
-{
-    gm->last_raw_angle = gm->raw_angle;
-
-    chSysLock();
-    gm->updated = true;
-    gm->raw_angle        = (uint16_t)(rxmsg->data8[0]) << 8 | rxmsg->data8[1];
-    gm->raw_current      = (int16_t)((rxmsg->data8[2]) << 8 | rxmsg->data8[3]);
-    gm->current_setpoint = (int16_t)((rxmsg->data8[4]) << 8 | rxmsg->data8[5]);
-    chSysUnlock();
-
-    if      (gm->raw_angle - gm->last_raw_angle >  CAN_ENCODER_RANGE / 2) gm->round_count--;
-    else if (gm->raw_angle - gm->last_raw_angle < -CAN_ENCODER_RANGE / 2) gm->round_count++;
-
-    gm->total_ecd = gm->round_count * CAN_ENCODER_RANGE + gm->raw_angle - gm->offset_raw_angle;
-    gm->radian_angle = gm->total_ecd * CAN_ENCODER_RADIAN_RATIO;
-}
-
-
 static void can_processEncoderMessage(CANDriver* const canp, const CANRxFrame* const rxmsg)
 {
-  if(canp == &CAND1)
-  {
     switch(rxmsg->SID)
     {
-        case CAN_CHASSIS_FL_FEEDBACK_MSG_ID:
-            chassis_encoder[FRONT_LEFT].msg_count++;
-            chassis_encoder[FRONT_LEFT].msg_count <= 50 ? can_getMotorOffset(&chassis_encoder[FRONT_LEFT],rxmsg) : can_processChassisEncoder(&chassis_encoder[FRONT_LEFT],rxmsg);
+        case FEEDERR_CAN_SID:
+            feeder_encoder[RIGHT].msg_count++;
+            feeder_encoder[RIGHT].msg_count <= 50 ? can_getMotorOffset(&feeder_encoder[RIGHT],rxmsg) : can_processChassisEncoder(&feeder_encoder[RIGHT],rxmsg);
             break;
-        case CAN_CHASSIS_FR_FEEDBACK_MSG_ID:
-            chassis_encoder[FRONT_RIGHT].msg_count++;
-            chassis_encoder[FRONT_RIGHT].msg_count <= 50 ? can_getMotorOffset(&chassis_encoder[FRONT_RIGHT],rxmsg) : can_processChassisEncoder(&chassis_encoder[FRONT_RIGHT],rxmsg);
-            break;
-        case CAN_CHASSIS_BL_FEEDBACK_MSG_ID:
-            chassis_encoder[BACK_LEFT].msg_count++;
-            chassis_encoder[BACK_LEFT].msg_count <= 50 ? can_getMotorOffset(&chassis_encoder[BACK_LEFT],rxmsg) : can_processChassisEncoder(&chassis_encoder[BACK_LEFT],rxmsg);
-            break;
-        case CAN_CHASSIS_BR_FEEDBACK_MSG_ID:
-            chassis_encoder[BACK_RIGHT].msg_count++;
-            chassis_encoder[BACK_RIGHT].msg_count <= 50 ? can_getMotorOffset(&chassis_encoder[BACK_RIGHT],rxmsg) : can_processChassisEncoder(&chassis_encoder[BACK_RIGHT],rxmsg);
-          break;
-        case CAN_GIMBAL_YAW_FEEDBACK_MSG_ID:
-            can_processGimbalEncoder(&gimbal_encoder[GIMBAL_YAW] ,rxmsg);
-            break;
-        case CAN_GIMBAL_PITCH_FEEDBACK_MSG_ID:
-            can_processGimbalEncoder(&gimbal_encoder[GIMBAL_PITCH] ,rxmsg);
+        case FEEDERL_CAN_SID:
+            feeder_encoder[LEFT].msg_count++;
+            feeder_encoder[LEFT].msg_count <= 50 ? can_getMotorOffset(&feeder_encoder[LEFT],rxmsg) : can_processChassisEncoder(&feeder_encoder[LEFT],rxmsg);
             break;
     }
-  }
-  else
-  {
-    switch(rxmsg->SID)
-    {
-        case CAN_CHASSIS_FL_FEEDBACK_MSG_ID:
-          can_processChassisEncoder(&extra_encoder[FRONT_LEFT] ,rxmsg);
-          break;
-        case CAN_CHASSIS_FR_FEEDBACK_MSG_ID:
-          can_processChassisEncoder(&extra_encoder[FRONT_RIGHT] ,rxmsg);
-          break;
-        case CAN_CHASSIS_BL_FEEDBACK_MSG_ID:
-          can_processChassisEncoder(&extra_encoder[BACK_LEFT] ,rxmsg);
-          break;
-        case CAN_CHASSIS_BR_FEEDBACK_MSG_ID:
-          can_processChassisEncoder(&extra_encoder[BACK_RIGHT] ,rxmsg);
-          break;
-    }
-  }
 }
 
 /*
@@ -221,9 +157,7 @@ void can_motorSetCurrent(CANDriver *const CANx,
 void can_processInit(void)
 {
 
-  memset((void *)gimbal_encoder,  0, sizeof(GimbalEncoder_canStruct) *GIMBAL_MOTOR_NUM);
-  memset((void *)chassis_encoder, 0, sizeof(ChassisEncoder_canStruct)*CHASSIS_MOTOR_NUM);
-  memset((void *)extra_encoder, 0, sizeof(ChassisEncoder_canStruct)*EXTRA_MOTOR_NUM);
+  memset((void *)feeder_encoder, 0, sizeof(ChassisEncoder_canStruct)*FEEDER_MOTOR_NUM);
 
   uint8_t i;
   for (i = 0; i < CAN_FILTER_NUM; i++)

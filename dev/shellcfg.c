@@ -6,6 +6,7 @@
 #include "main.h"
 #include "shell.h"
 #include <string.h>
+#include <inc/canBusProcess.h>
 
 #define SERIAL_CMD       &SDU1
 #define SERIAL_DATA      &SDU1
@@ -84,6 +85,31 @@ void cmd_test(BaseSequentialStream * chp, int argc, char *argv[])
 {
   (void) argc,argv;
 
+    extern uint16_t bullet_count[2];
+  static lpfilterStruct lp_spd_feeder;
+
+  volatile  ChassisEncoder_canStruct* feeder_encoder = can_getFeederMotor();
+
+  chprintf(chp," right speed: %f \r\n", feeder_encoder[RIGHT].raw_speed/FEEDER_GEAR/60.0f*FEEDER_BULLET_PER_TURN);
+    chprintf(chp," right cmd: %d \r\n", getFeederOutput()[RIGHT]);
+  chprintf(chp," left speed: %f \r\n", feeder_encoder[LEFT].raw_speed/FEEDER_GEAR/60.0f*FEEDER_BULLET_PER_TURN);
+    chprintf(chp," left cmd: %d \r\n", getFeederOutput()[LEFT]);
+  chprintf(chp,"count 0: %d\r\n", bullet_count[0]);
+  chprintf(chp,"count 1: %d\r\n", bullet_count[1]);
+  chprintf(chp,"rangefinder 0: %f\r\n", rangeFinder_getDistance(RANGEFINDER_INDEX_0));
+  chprintf(chp,"rangefinder 1: %f\r\n", rangeFinder_getDistance(RANGEFINDER_INDEX_1));
+    chprintf(chp,"R1 Switch: %d\r\n", LS_R1_DOWN());
+    chprintf(chp,"R2 Switch: %d\r\n", LS_R2_DOWN());
+    chprintf(chp,"L1 Switch: %d\r\n", LS_L1_DOWN());
+    chprintf(chp,"L2 Switch: %d\r\n", LS_L2_DOWN());
+}
+
+void cmd_zero(BaseSequentialStream * chp, int argc, char *argv[])
+{
+  (void) argc, argv;
+  extern uint16_t bullet_count[2];
+  bullet_count[0] = 0;
+  bullet_count[1] = 0;
 }
 
 void cmd_error(BaseSequentialStream * chp, int argc, char *argv[])
@@ -139,7 +165,8 @@ void cmd_measure(BaseSequentialStream * chp, int argc, char *argv[])
  */
 static const ShellCommand commands[] =
 {
-  {"test", cmd_test},
+  {"t", cmd_test},
+  {"z", cmd_zero},
   {"WTF", cmd_error},
 	//{"m", cmd_measure},
 	{"\xEE", cmd_data},

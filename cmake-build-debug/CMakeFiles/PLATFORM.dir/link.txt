@@ -1,2 +1,2 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libPLATFORM.a  CMakeFiles/PLATFORM.dir/os/hal/ports/STM32/LLD/USARTv1/serial_lld.c.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libPLATFORM.a
+/usr/bin/ar qc libPLATFORM.a  CMakeFiles/PLATFORM.dir/os/hal/ports/STM32/LLD/USARTv1/serial_lld.c.o
+/usr/bin/ranlib libPLATFORM.a
