@@ -18,6 +18,7 @@
 #include "exti.h"
 #include "sdlog.h"
 #include "servo.h"
+#include "lift.h"
 
 void shellStart(void);
 
@@ -27,13 +28,22 @@ void shellStart(void);
  * ===============================================================================================
 */
 
-#define LEFT 1
-#define RIGHT 0
-#define BULLETS_MAX 10
-#define SET_DISTANCE 5
+#define BULLETS_INIT 120
+#define BULLETS_MAX  120
+#define SET_DISTANCE 50.0
 #define DOOR_DELAY 1000
 
+typedef enum{
+    REFILLER_IDLE = 0,
+    REFILLER_FEEDER_R,
+    REFILLER_FEEDER_L,
+    REFILLER_FEEDER_B
+} refiller_state_t;
+
 //#define DEBUG
+bool* getDoor(void);
+bool* getDistanceOK(void);
+bool* getFinished(void);
 #endif
 /*
  * 200 bullets when game start

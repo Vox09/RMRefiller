@@ -16,6 +16,7 @@ RC_Ctl_t* P_Get_Dbus;
 
 
 static volatile ChassisEncoder_canStruct feeder_encoder[FEEDER_MOTOR_NUM];
+static volatile ChassisEncoder_canStruct lift_encoder[LIFT_MOTOR_NUM];
 
 
 /*
@@ -38,6 +39,10 @@ volatile ChassisEncoder_canStruct* can_getFeederMotor(void)
   return feeder_encoder;
 }
 
+volatile ChassisEncoder_canStruct* can_getLiftMotor(void)
+{
+    return lift_encoder;
+}
 
 static inline void can_getMotorOffset
         (volatile ChassisEncoder_canStruct* cm, const CANRxFrame* const rxmsg)
@@ -84,6 +89,14 @@ static void can_processEncoderMessage(CANDriver* const canp, const CANRxFrame* c
         case FEEDERL_CAN_SID:
             feeder_encoder[LEFT].msg_count++;
             feeder_encoder[LEFT].msg_count <= 50 ? can_getMotorOffset(&feeder_encoder[LEFT],rxmsg) : can_processChassisEncoder(&feeder_encoder[LEFT],rxmsg);
+            break;
+        case LIFT_CAN_SID:
+            lift_encoder[LIFT].msg_count++;
+            lift_encoder[LIFT].msg_count <= 50 ? can_getMotorOffset(&lift_encoder[LIFT],rxmsg) : can_processChassisEncoder(&lift_encoder[LIFT],rxmsg);
+            break;
+        case LIFT_DOOR_CAN_SID:
+            lift_encoder[DOOR].msg_count++;
+            lift_encoder[DOOR].msg_count <= 50 ? can_getMotorOffset(&lift_encoder[DOOR],rxmsg) : can_processChassisEncoder(&lift_encoder[DOOR],rxmsg);
             break;
     }
 }

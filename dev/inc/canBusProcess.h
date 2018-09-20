@@ -7,9 +7,12 @@
 #include "string.h"
 
 #define FEEDER_MOTOR_NUM  2U
+#define LIFT_MOTOR_NUM  2U
 
-#define FEEDERR_CAN_SID       0x201
-#define FEEDERL_CAN_SID       0x205
+#define FEEDERR_CAN_SID       0x205
+#define FEEDERL_CAN_SID       0x206
+#define LIFT_CAN_SID          0x201
+#define LIFT_DOOR_CAN_SID     0x202
 
 #define CAN_GIMBAL_SEND_DBUS_ID                     0x001
 
@@ -22,10 +25,15 @@ typedef enum
   GIMBAL_PITCH
 }gimbal_num_t;
 
-typedef enum
-{ RIGHT = 0,
-  LEFT = 1
+typedef enum {
+    RIGHT = 0,
+    LEFT
 }feeder_num_t;
+
+typedef enum {
+    LIFT = 0,
+    DOOR
+}lift_num_t;
 
 typedef struct {
     uint16_t raw_angle;
@@ -67,6 +75,7 @@ typedef struct{
 
 volatile GimbalEncoder_canStruct* can_getGimbalMotor(void);
 volatile ChassisEncoder_canStruct* can_getFeederMotor(void);
+volatile ChassisEncoder_canStruct* can_getLiftMotor(void);
 volatile ChassisEncoder_canStruct* can_getExtraMotor(void);
 
 void can_processInit(void);

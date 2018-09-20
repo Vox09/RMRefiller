@@ -86,7 +86,8 @@
 #define LEFT_EMPTY()    (palClearPad(GPIOD,GPIOD_PIN14_LEDR1))
 #define LEFT_OK()       (palSetPad(GPIOD,GPIOD_PIN15_LEDR2))
 #define LEFT_FINISH()   (palClearPad(GPIOD,GPIOD_PIN15_LEDR2))
-
+#define MIDDLE_PROCESSING() (palSetPad(GPIOC,GPIOC_PIN3_LEDM))
+#define MIDDLE_IDLE() (palClearPad(GPIOC,GPIOC_PIN3_LEDM))
 /**
  * @brief   Enables the PAL subsystem.
  */

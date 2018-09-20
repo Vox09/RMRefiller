@@ -13,13 +13,15 @@
 #define M_TO_CM                     100.0f
 
 #define S_TO_MS 							   	 1000.0f
-#define RATIO												100.0f
-#define MM_TO_CM												10
+#define RATIO									100.0f
+#define MM_TO_CM								10
 
-#define RANGEFINDER_INDEX_0        	     0
-#define RANGEFINDER_INDEX_1    					 1
+#define RANGEFINDER_INDEX_0        	    0
+#define RANGEFINDER_INDEX_1    			1
+#define COME_SENSOR		    			2
+#define LEAVE_SENSOR	    			3
 
-#define RANGEFINDER_NUM             	   2
+#define RANGEFINDER_NUM             	4
 
 typedef enum{
 		RANGEFINDER_DISABLE = 0,

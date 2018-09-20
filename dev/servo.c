@@ -72,6 +72,11 @@ uint16_t servoGetMin(Servo *servo) {
 void servosInit(){
 	servoInit(&servo_L);
 	servoInit(&servo_R);
+	open_tank(0);
+	open_tank(1);
+	chThdSleepMilliseconds(500);
+	close_tank(0);
+	close_tank(1);
 }
 
 // Function for opening the sub tank using the servo motor

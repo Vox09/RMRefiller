@@ -17,47 +17,52 @@
 
 static BaseSequentialStream* chp = (BaseSequentialStream*)&SDU1;
 
-typedef enum{
-    REFILLER_IDLE = 0,
-    REFILLER_FEEDER_R,
-    REFILLER_FEEDER_L,
-    REFILLER_FEEDER_B
-} refiller_state_t;
 
 static refiller_state_t refiller_state;
 volatile uint16_t bullet_count[2] = {0, 0};// changed in exti.c
 
-static THD_WORKING_AREA(refiller_control_wa, 512);
+static uint8_t bullet_per_time = BULLETS_INIT;
+static int8_t refill_count= 0;
+
+static bool      distance_OK[2]  = {false, false};
+static bool      door_open[2]    = {false, false};
+static bool      finished[2]     = {false, false};
+
+static float     distance[2];
+static systime_t robot_present_time[2];
+
+// Debug functions
+bool* getDoor(){ return door_open;}
+bool* getDistanceOK(){return distance_OK;}
+bool* getFinished(){return finished;}
+
+static THD_WORKING_AREA(refiller_control_wa, 1024);
 static THD_FUNCTION(refiller_control, p){
     (void) p;
-    chRegSetThreadName("refiller_control_right");
-
-    bool      door_open[2]    = {false, false};
-    bool      finished[2]     = {false, false};
+    chRegSetThreadName("refiller_control");
 
 
-    float     distance[2];
-    systime_t robot_present_time[2];
 #ifdef DEBUG
-    param_t debugController[4];
+    param_t debugController[6];
     static const DEBUG_CONTROLLER="DEBUG_CONTROLLER";
-    static const char subname_debug_controller[]="RF LF RT LT";
-    params_set(debugController,10,4,DEBUG_CONTROLLER,subname_debug_controller,PARAM_PUBLIC);
+    static const char subname_debug_controller[]="RF LF RT LT LIFT DOOR";
+    params_set(debugController,16,6,DEBUG_CONTROLLER,subname_debug_controller,PARAM_PUBLIC);
 #endif
     while(!chThdShouldTerminateX())
     {
 
         systime_t curr_time = chVTGetSystemTimeX();
+        if(refill_count>3) bullet_per_time= BULLETS_MAX;
 #ifndef DEBUG
         // Decide which tank needs to be refilled first, prioritizing the right one (easier to access during the game)
         // Decide refiller status
-        if(bullet_count[RIGHT] >= BULLETS_MAX && bullet_count[LEFT] >= BULLETS_MAX)
+        if(bullet_count[RIGHT] >= bullet_per_time && bullet_count[LEFT] >= bullet_per_time )
             refiller_state = REFILLER_IDLE;
-        else if(bullet_count[RIGHT] < BULLETS_MAX && bullet_count[LEFT] < BULLETS_MAX)
+        else if(bullet_count[RIGHT] < bullet_per_time && bullet_count[LEFT] < bullet_per_time)
             refiller_state = REFILLER_FEEDER_B;
-        else if(bullet_count[RIGHT] < BULLETS_MAX && bullet_count[LEFT] >= BULLETS_MAX)
+        else if(bullet_count[RIGHT] < bullet_per_time && bullet_count[LEFT] >=bullet_per_time )
             refiller_state = REFILLER_FEEDER_R;
-        else if(bullet_count[RIGHT] >= BULLETS_MAX && bullet_count[LEFT] < BULLETS_MAX)
+        else if(bullet_count[RIGHT] >= bullet_per_time && bullet_count[LEFT] < bullet_per_time)
             refiller_state = REFILLER_FEEDER_L;
         // Do the staff
         switch (refiller_state) {
@@ -86,13 +91,17 @@ static THD_FUNCTION(refiller_control, p){
                 feeder_refill(LEFT);
                 break;
         }
+
+        // TANK STUFF
         // Calculate the distance from rangefinder sensors on both sides of the Refiller
         distance[RIGHT] = rangeFinder_getDistance(RANGEFINDER_INDEX_0);
         distance[LEFT] = rangeFinder_getDistance(RANGEFINDER_INDEX_1);
 
+        distance_OK[RIGHT] = (distance[RIGHT] <= SET_DISTANCE || distance[RIGHT]>1000.0);
+        distance_OK[LEFT] = (distance[LEFT] <= SET_DISTANCE || distance[LEFT]>1000.0);
         // Should not use chThdSleepMilliseconds()
         //RIGHT
-        if (distance[RIGHT] <= SET_DISTANCE &&
+        if (distance_OK[RIGHT] &&
             LS_R1_DOWN() && LS_R2_DOWN()
             && !door_open[RIGHT] // avoid repeated opening door
             && !finished[RIGHT]) // ensure when robots present only done once
@@ -100,6 +109,7 @@ static THD_FUNCTION(refiller_control, p){
             robot_present_time[RIGHT] = curr_time;
             open_tank(RIGHT);
             door_open[RIGHT] = true;
+            refill_count++;
         }
         // close tank after DOOR_DELAY time
         if ( door_open[RIGHT] &&
@@ -111,10 +121,11 @@ static THD_FUNCTION(refiller_control, p){
             finished[RIGHT] = true;
         }
         // reset finished status after robot leave
-        if(finished[RIGHT] && distance[RIGHT]> SET_DISTANCE)
+        if(finished[RIGHT] && !distance_OK[RIGHT])
             finished[RIGHT] = false;
+
         //LEFT
-        if (distance[LEFT] <= SET_DISTANCE &&
+        if (distance_OK[LEFT] &&
             LS_L1_DOWN() && LS_L2_DOWN()
             && !door_open[LEFT] // avoid repeated opening door
             && !finished[LEFT]) // ensure when robots present only done once
@@ -122,6 +133,7 @@ static THD_FUNCTION(refiller_control, p){
             robot_present_time[LEFT] = curr_time;
             open_tank(LEFT);
             door_open[LEFT] = true;
+            refill_count++;
         }
         // close tank after DOOR_DELAY time
         if ( door_open[LEFT] &&
@@ -133,11 +145,13 @@ static THD_FUNCTION(refiller_control, p){
             finished[LEFT] = true;
         }
         // reset finished status after robot leave
-        if(finished[LEFT] && distance[LEFT]> SET_DISTANCE)
+        if(finished[LEFT] && !distance_OK[LEFT])
             finished[LEFT] = false;
 
+
+
 #else
-        if(debugController[0]>0)//RF
+            if(debugController[0]>0)//RF
             feeder_refill(RIGHT);
         else feeder_brake(RIGHT);
         if(debugController[1]>0)//LF
@@ -149,7 +163,17 @@ static THD_FUNCTION(refiller_control, p){
         if(debugController[3]>0)//LT
             open_tank(LEFT);
         else close_tank(LEFT);
+//        if(debugController[4]>0)//LIFT
+//            lift_go_up();
+        //can_motorSetCurrent(FEEDER_CAN, LIFT_CAN_EID,(int16_t)debugController[5],0,0,0);
+//        else
+//            lift_go_down();
+        //can_motorSetCurrent(FEEDER_CAN, LIFT_CAN_EID,-(int16_t)debugController[5],0,0,0);
+        if(debugController[5]>0)//DOOR
+            open_mid_door();
+        else close_mid_door();
 
+//        can_motorSetCurrent(FEEDER_CAN, LIFT_CAN_EID,0,(int16_t)debugController[5],0,0);
 #endif
         chThdSleepMilliseconds(10);
     }
@@ -182,8 +206,13 @@ int main(void) {
 
     sdlog_init();
     feeder_init();
+    lift_init();
 
-    chThdCreateStatic(refiller_control_wa, sizeof(refiller_control_wa), NORMALPRIO,
+    RIGHT_EMPTY();
+    RIGHT_FINISH();
+    LEFT_EMPTY();
+    LEFT_FINISH();
+    chThdCreateStatic(refiller_control_wa, sizeof(refiller_control_wa), NORMALPRIO+5,
                       refiller_control, NULL);
 
     while (true)

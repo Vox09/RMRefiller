@@ -32,15 +32,12 @@ pid_struct  rest_pid[2] /*= {0.45, 0, 0, 0, 0}*/;
 uint16_t error_count[2] = {0,0};
 
 
-void feeder_canUpdate(uint8_t i)
+void feeder_canUpdate()
 {
-    if(i == RIGHT)
-        can_motorSetCurrent(FEEDER_CAN, FEEDERR_CAN_EID,\
-        feeder_output[RIGHT], 0, 0, 0);
-    else
-        can_motorSetCurrent(FEEDER_CAN, FEEDERL_CAN_EID,\
-        feeder_output[LEFT], 0, 0, 0);
+        can_motorSetCurrent(FEEDER_CAN, FEEDER_CAN_EID,\
+        feeder_output[RIGHT],feeder_output[LEFT], 0, 0);
 }
+
 
 void feeder_brake(uint8_t i)
 {
@@ -129,10 +126,9 @@ static void feeder_func(uint8_t i){
               while (chVTIsSystemTimeWithin(error_start_time, (error_start_time + MS2ST(200))))
               {
                 feeder_output[i] = feeder_controlPos(i,error_angle_sp, FEEDER_OUTPUT_MAX_BACK);
-                feeder_canUpdate(i);
+                feeder_canUpdate();
                 chThdSleepMilliseconds(1);
               }
-                error_count[i] = 0;
             }
 
             feeder_output[i] = feeder_controlVel(i,FEEDER_SPEED_SP_RPM, FEEDER_OUTPUT_MAX);
@@ -141,30 +137,33 @@ static void feeder_func(uint8_t i){
             feeder_output[i] = 0;
             break;
     }
-    feeder_canUpdate(i);
 }
 
-static THD_WORKING_AREA(feeder_control_R_wa,512);
-static THD_FUNCTION(feeder_control_R, p){
+
+static THD_WORKING_AREA(feeder_control_wa,512);
+static THD_FUNCTION(feeder_control, p){
     (void) p;
-    chRegSetThreadName("feeder controller_R");
+    chRegSetThreadName("feeder controller");
     while(!chThdShouldTerminateX())
     {
         feeder_func(RIGHT);
+        feeder_func(LEFT);
+        feeder_canUpdate();
         chThdSleepMilliseconds(1);
     }
 }
 
-static THD_WORKING_AREA(feeder_control_L_wa, 512);
-static THD_FUNCTION(feeder_control_L, p){
-    (void) p;
-    chRegSetThreadName("feeder controller_L");
-    while(!chThdShouldTerminateX())
-    {
-        feeder_func(LEFT);
-        chThdSleepMilliseconds(1);
-    }
-}
+
+//static THD_WORKING_AREA(feeder_control_L_wa, 512);
+//static THD_FUNCTION(feeder_control_L, p){
+//    (void) p;
+//    chRegSetThreadName("feeder controller_L");
+//    while(!chThdShouldTerminateX())
+//    {
+//        feeder_func(LEFT);
+//        chThdSleepMilliseconds(1);
+//    }
+//}
 
 static const FEEDER_VEL_R  = "FEEDER_VEL_R";
 static const FEEDER_POS_R  = "FEEDER_POS_R";
@@ -179,22 +178,23 @@ void feeder_init(void)
     feeder_encode = can_getFeederMotor();
     p_dbus = RC_get();
 
-    params_set(&vel_pid[RIGHT], 11,4,FEEDER_VEL_R,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&pos_pid[RIGHT], 12,4,FEEDER_POS_R,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&rest_pid[RIGHT], 13,4,FEEDER_rest_name_R,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&vel_pid[RIGHT], 1,4,FEEDER_VEL_R,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&pos_pid[RIGHT], 2,4,FEEDER_POS_R,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&rest_pid[RIGHT],3,4,FEEDER_rest_name_R,subname_feeder_PID,PARAM_PUBLIC);
 
-    params_set(&vel_pid[LEFT], 14,4,FEEDER_VEL_L,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&pos_pid[LEFT], 15,4,FEEDER_POS_L,subname_feeder_PID,PARAM_PUBLIC);
-    params_set(&rest_pid[LEFT], 16,4,FEEDER_rest_name_L,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&vel_pid[LEFT], 4,4,FEEDER_VEL_L,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&pos_pid[LEFT], 5,4,FEEDER_POS_L,subname_feeder_PID,PARAM_PUBLIC);
+    params_set(&rest_pid[LEFT],6,4,FEEDER_rest_name_L,subname_feeder_PID,PARAM_PUBLIC);
 
     lpfilter_init(&(lp_spd_feeder[RIGHT]), 1000, 30);
     lpfilter_init(&(lp_spd_feeder[LEFT]), 1000, 30);
     feeder_brakePos[RIGHT] = (float)feeder_encode[RIGHT].total_ecd;
     feeder_brakePos[LEFT] = (float)feeder_encode[LEFT].total_ecd;
 
-    chThdCreateStatic(feeder_control_R_wa, sizeof(feeder_control_R_wa),
-                     NORMALPRIO - 5, feeder_control_R, NULL);
-    chThdCreateStatic(feeder_control_L_wa, sizeof(feeder_control_L_wa),
-                      NORMALPRIO - 5, feeder_control_L, NULL);
+    chThdCreateStatic(feeder_control_wa, sizeof(feeder_control_wa),
+                      NORMALPRIO - 5, feeder_control, NULL);
+//    chThdCreateStatic(feeder_control_L_wa, sizeof(feeder_control_L_wa),
+//                      NORMALPRIO - 5, feeder_control_L, NULL);
 
 }
+

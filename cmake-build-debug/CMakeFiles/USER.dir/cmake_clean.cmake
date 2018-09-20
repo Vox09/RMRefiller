@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/USER.dir/dev/exti.c.o"
   "CMakeFiles/USER.dir/dev/feeder.c.o"
   "CMakeFiles/USER.dir/dev/flash.c.o"
+  "CMakeFiles/USER.dir/dev/lift.c.o"
   "CMakeFiles/USER.dir/dev/main.c.o"
   "CMakeFiles/USER.dir/dev/math_misc.c.o"
   "CMakeFiles/USER.dir/dev/params.c.o"

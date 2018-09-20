@@ -86,22 +86,42 @@ void cmd_test(BaseSequentialStream * chp, int argc, char *argv[])
   (void) argc,argv;
 
     extern uint16_t bullet_count[2];
-  static lpfilterStruct lp_spd_feeder;
 
-  volatile  ChassisEncoder_canStruct* feeder_encoder = can_getFeederMotor();
-
-  chprintf(chp," right speed: %f \r\n", feeder_encoder[RIGHT].raw_speed/FEEDER_GEAR/60.0f*FEEDER_BULLET_PER_TURN);
-    chprintf(chp," right cmd: %d \r\n", getFeederOutput()[RIGHT]);
-  chprintf(chp," left speed: %f \r\n", feeder_encoder[LEFT].raw_speed/FEEDER_GEAR/60.0f*FEEDER_BULLET_PER_TURN);
-    chprintf(chp," left cmd: %d \r\n", getFeederOutput()[LEFT]);
-  chprintf(chp,"count 0: %d\r\n", bullet_count[0]);
-  chprintf(chp,"count 1: %d\r\n", bullet_count[1]);
-  chprintf(chp,"rangefinder 0: %f\r\n", rangeFinder_getDistance(RANGEFINDER_INDEX_0));
-  chprintf(chp,"rangefinder 1: %f\r\n", rangeFinder_getDistance(RANGEFINDER_INDEX_1));
-    chprintf(chp,"R1 Switch: %d\r\n", LS_R1_DOWN());
-    chprintf(chp,"R2 Switch: %d\r\n", LS_R2_DOWN());
-    chprintf(chp,"L1 Switch: %d\r\n", LS_L1_DOWN());
-    chprintf(chp,"L2 Switch: %d\r\n", LS_L2_DOWN());
+//  volatile ChassisEncoder_canStruct* feeder_encoder = can_getFeederMotor();
+  volatile ChassisEncoder_canStruct* lift_encoder = can_getLiftMotor();
+//  chprintf(chp," right speed: %f \r\n", feeder_encoder[RIGHT].msg_count);
+//  chprintf(chp," right speed: %f \r\n", feeder_encoder[LEFT].msg_count);
+//  chprintf(chp," left speed: %f \r\n", feeder_encoder[LIFT].msg_count);
+//  chprintf(chp," left speed: %f \r\n", feeder_encoder[DOOR].msg_count);
+//    chprintf(chp," left cmd: %d \r\n", getFeederOutput()[LEFT]);
+//  chprintf(chp,"count 0: %d\r\n", bullet_count[0]);
+//  chprintf(chp,"count 1: %d\r\n", bullet_count[1]);
+  while(true) {
+//    chprintf(chp, "rangefinder : %f  ||  %f \r\n",
+//             rangeFinder_getDistance(RANGEFINDER_INDEX_0),
+//             rangeFinder_getDistance(RANGEFINDER_INDEX_1));
+//    chprintf(chp, "R1 L1:        %d  ||  %d \r\n", LS_R1_DOWN(),LS_L1_DOWN());
+//    chprintf(chp, "R2 L2:        %d  ||  %d \r\n", LS_R2_DOWN(),LS_L2_DOWN());
+//    chprintf(chp, "Distance   :  %d  ||  %d \r\n", getDistanceOK()[0],getDistanceOK()[1]);
+//    chprintf(chp, "Door status:  %d  ||  %d \r\n", getDoor()[0],getDoor()[1]);
+//    chprintf(chp, "Finished   :  %d  ||  %d \r\n", getFinished()[0],getFinished()[1]);
+//      chprintf(chp, "come :  %f   \r\n",rangeFinder_getDistance(COME_SENSOR));
+//    chprintf(chp, "leave :  %f   \r\n",rangeFinder_getDistance(LEAVE_SENSOR));
+//      chprintf(chp, "lift state :  %d   \r\n",get_lift_state());
+//      chprintf(chp, "door state :  %d   \r\n",get_door_state());
+//      chprintf(chp, "big car :  %d   \r\n",get_big_car());
+//    chprintf(chp, "success :  %d   \r\n",get_lift_success());
+//    chprintf(chp, "lift done up :  %d   \r\n",lift_done_up());
+//    chprintf(chp, "lift done down :  %d   \r\n",lift_done_down());
+//      chprintf(chp, "door done open :  %d   \r\n",door_done_open());
+//      chprintf(chp, "door done close :  %d   \r\n",door_done_close());
+//      chprintf(chp, "lift encoder :  %d   \r\n", lift_encoder[LIFT].total_ecd);
+      chprintf(chp, " up range :  %f   \r\n", rangeFinder_getDistance(LEAVE_SENSOR));
+    chThdSleepMilliseconds(500);
+  }
+//  chprintf(chp,"Lift state: %d\r\n", get_lift_state());
+//  chprintf(chp,"lift count: %d\r\n", can_getLiftMotor()->msg_count);
+//  chprintf(chp,"lift total_ecd: %d\r\n", can_getLiftMotor()->total_ecd);
 }
 
 void cmd_zero(BaseSequentialStream * chp, int argc, char *argv[])
@@ -110,6 +130,24 @@ void cmd_zero(BaseSequentialStream * chp, int argc, char *argv[])
   extern uint16_t bullet_count[2];
   bullet_count[0] = 0;
   bullet_count[1] = 0;
+}
+
+void cmd_up(BaseSequentialStream * chp, int argc, char *argv[])
+{
+  (void) argc,argv;
+    lift_go_up();
+}
+
+void cmd_down(BaseSequentialStream * chp, int argc, char *argv[])
+{
+  (void) argc,argv;
+    lift_go_down();
+}
+
+void cmd_stop(BaseSequentialStream * chp, int argc, char *argv[])
+{
+  (void) argc,argv;
+  can_motorSetCurrent(FEEDER_CAN,LIFT_CAN_EID,0,0,0,0);
 }
 
 void cmd_error(BaseSequentialStream * chp, int argc, char *argv[])
@@ -167,6 +205,9 @@ static const ShellCommand commands[] =
 {
   {"t", cmd_test},
   {"z", cmd_zero},
+  {"u",cmd_up},
+  {"d",cmd_down},
+  {"s",cmd_stop},
   {"WTF", cmd_error},
 	//{"m", cmd_measure},
 	{"\xEE", cmd_data},

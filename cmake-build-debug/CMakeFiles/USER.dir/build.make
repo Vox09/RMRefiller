@@ -201,9 +201,33 @@ CMakeFiles/USER.dir/dev/flash.c.o.provides: CMakeFiles/USER.dir/dev/flash.c.o.re
 CMakeFiles/USER.dir/dev/flash.c.o.provides.build: CMakeFiles/USER.dir/dev/flash.c.o
 
 
+CMakeFiles/USER.dir/dev/lift.c.o: CMakeFiles/USER.dir/flags.make
+CMakeFiles/USER.dir/dev/lift.c.o: ../dev/lift.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/USER.dir/dev/lift.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/lift.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/lift.c
+
+CMakeFiles/USER.dir/dev/lift.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/USER.dir/dev/lift.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/destinxxy/Documents/RM2018/RMRefiller/dev/lift.c > CMakeFiles/USER.dir/dev/lift.c.i
+
+CMakeFiles/USER.dir/dev/lift.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/USER.dir/dev/lift.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/destinxxy/Documents/RM2018/RMRefiller/dev/lift.c -o CMakeFiles/USER.dir/dev/lift.c.s
+
+CMakeFiles/USER.dir/dev/lift.c.o.requires:
+
+.PHONY : CMakeFiles/USER.dir/dev/lift.c.o.requires
+
+CMakeFiles/USER.dir/dev/lift.c.o.provides: CMakeFiles/USER.dir/dev/lift.c.o.requires
+	$(MAKE) -f CMakeFiles/USER.dir/build.make CMakeFiles/USER.dir/dev/lift.c.o.provides.build
+.PHONY : CMakeFiles/USER.dir/dev/lift.c.o.provides
+
+CMakeFiles/USER.dir/dev/lift.c.o.provides.build: CMakeFiles/USER.dir/dev/lift.c.o
+
+
 CMakeFiles/USER.dir/dev/main.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/main.c.o: ../dev/main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/USER.dir/dev/main.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/USER.dir/dev/main.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/main.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/main.c
 
 CMakeFiles/USER.dir/dev/main.c.i: cmake_force
@@ -227,7 +251,7 @@ CMakeFiles/USER.dir/dev/main.c.o.provides.build: CMakeFiles/USER.dir/dev/main.c.
 
 CMakeFiles/USER.dir/dev/math_misc.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/math_misc.c.o: ../dev/math_misc.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/USER.dir/dev/math_misc.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/USER.dir/dev/math_misc.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/math_misc.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/math_misc.c
 
 CMakeFiles/USER.dir/dev/math_misc.c.i: cmake_force
@@ -251,7 +275,7 @@ CMakeFiles/USER.dir/dev/math_misc.c.o.provides.build: CMakeFiles/USER.dir/dev/ma
 
 CMakeFiles/USER.dir/dev/params.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/params.c.o: ../dev/params.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/USER.dir/dev/params.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/USER.dir/dev/params.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/params.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/params.c
 
 CMakeFiles/USER.dir/dev/params.c.i: cmake_force
@@ -275,7 +299,7 @@ CMakeFiles/USER.dir/dev/params.c.o.provides.build: CMakeFiles/USER.dir/dev/param
 
 CMakeFiles/USER.dir/dev/rangefinder.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/rangefinder.c.o: ../dev/rangefinder.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/USER.dir/dev/rangefinder.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/USER.dir/dev/rangefinder.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/rangefinder.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/rangefinder.c
 
 CMakeFiles/USER.dir/dev/rangefinder.c.i: cmake_force
@@ -299,7 +323,7 @@ CMakeFiles/USER.dir/dev/rangefinder.c.o.provides.build: CMakeFiles/USER.dir/dev/
 
 CMakeFiles/USER.dir/dev/sdlog.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/sdlog.c.o: ../dev/sdlog.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/USER.dir/dev/sdlog.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/USER.dir/dev/sdlog.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/sdlog.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/sdlog.c
 
 CMakeFiles/USER.dir/dev/sdlog.c.i: cmake_force
@@ -323,7 +347,7 @@ CMakeFiles/USER.dir/dev/sdlog.c.o.provides.build: CMakeFiles/USER.dir/dev/sdlog.
 
 CMakeFiles/USER.dir/dev/servo.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/servo.c.o: ../dev/servo.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/USER.dir/dev/servo.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/USER.dir/dev/servo.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/servo.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/servo.c
 
 CMakeFiles/USER.dir/dev/servo.c.i: cmake_force
@@ -347,7 +371,7 @@ CMakeFiles/USER.dir/dev/servo.c.o.provides.build: CMakeFiles/USER.dir/dev/servo.
 
 CMakeFiles/USER.dir/dev/shellcfg.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/shellcfg.c.o: ../dev/shellcfg.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/USER.dir/dev/shellcfg.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/USER.dir/dev/shellcfg.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/shellcfg.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/shellcfg.c
 
 CMakeFiles/USER.dir/dev/shellcfg.c.i: cmake_force
@@ -371,7 +395,7 @@ CMakeFiles/USER.dir/dev/shellcfg.c.o.provides.build: CMakeFiles/USER.dir/dev/she
 
 CMakeFiles/USER.dir/dev/usbcfg.c.o: CMakeFiles/USER.dir/flags.make
 CMakeFiles/USER.dir/dev/usbcfg.c.o: ../dev/usbcfg.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/USER.dir/dev/usbcfg.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object CMakeFiles/USER.dir/dev/usbcfg.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/USER.dir/dev/usbcfg.c.o   -c /home/destinxxy/Documents/RM2018/RMRefiller/dev/usbcfg.c
 
 CMakeFiles/USER.dir/dev/usbcfg.c.i: cmake_force
@@ -401,6 +425,7 @@ USER_OBJECTS = \
 "CMakeFiles/USER.dir/dev/exti.c.o" \
 "CMakeFiles/USER.dir/dev/feeder.c.o" \
 "CMakeFiles/USER.dir/dev/flash.c.o" \
+"CMakeFiles/USER.dir/dev/lift.c.o" \
 "CMakeFiles/USER.dir/dev/main.c.o" \
 "CMakeFiles/USER.dir/dev/math_misc.c.o" \
 "CMakeFiles/USER.dir/dev/params.c.o" \
@@ -419,6 +444,7 @@ libUSER.a: CMakeFiles/USER.dir/dev/error.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/exti.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/feeder.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/flash.c.o
+libUSER.a: CMakeFiles/USER.dir/dev/lift.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/main.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/math_misc.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/params.c.o
@@ -429,7 +455,7 @@ libUSER.a: CMakeFiles/USER.dir/dev/shellcfg.c.o
 libUSER.a: CMakeFiles/USER.dir/dev/usbcfg.c.o
 libUSER.a: CMakeFiles/USER.dir/build.make
 libUSER.a: CMakeFiles/USER.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking C static library libUSER.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/destinxxy/Documents/RM2018/RMRefiller/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking C static library libUSER.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/USER.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/USER.dir/link.txt --verbose=$(VERBOSE)
 
@@ -444,6 +470,7 @@ CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/error.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/exti.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/feeder.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/flash.c.o.requires
+CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/lift.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/main.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/math_misc.c.o.requires
 CMakeFiles/USER.dir/requires: CMakeFiles/USER.dir/dev/params.c.o.requires
